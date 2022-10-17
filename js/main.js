@@ -1,7 +1,24 @@
+let scoreboard = {
+    "computer": 0,
+    "player": 0
+}
+
+const winnerDiv = document.querySelector(".winner");
+const scoreDiv = document.querySelector(".score");
+
+const buttons = document.querySelectorAll(".hand");
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        roundWinner = playRound(button.id, getComputerChoice());
+        addScore(scoreboard, roundWinner);
+        checkWinner(scoreboard);
+    })
+})
+
 function getComputerChoice() {
     const hands = ["Rock", "Paper", "Scissors"];
-
-    return hands[Math.floor(Math.random() * 3)]
+    
+    return hands[Math.floor(Math.random() * 3)];
 }
 
 function playRound(playerSelection, computerSelection) {
@@ -14,86 +31,70 @@ function playRound(playerSelection, computerSelection) {
         case "rock":
             switch (computerSelection) {
                 case "paper":
-                    winner = "computer"
+                    winner = "computer";
                     break;
                 case "rock":
-                    winner = "draw"
+                    winner = "draw";
                     break;
                 case "scissors":
-                    winner = "player"
+                    winner = "player";
                     break;
             }
             break;
         case "paper":
             switch (computerSelection) {
                 case "scissors":
-                    winner = "computer"
+                    winner = "computer";
                     break;
-                case "paper":
-                    winner = "draw"
+                    case "paper":
+                        winner = "draw";
                     break;
                 case "rock":
-                    winner = "player"
+                    winner = "player";
                     break;
-            }
+                }
             break;
-        case "scissors":
-            switch (computerSelection) {
+            case "scissors":
+                switch (computerSelection) {
                 case "rock":
-                    winner = "computer"
+                    winner = "computer";
                     break;
                 case "scissors":
-                    winner = "draw"
+                    winner = "draw";
                     break;
                 case "paper":
-                    winner = "player"
+                    winner = "player";
                     break;
             }
             break;
-    }
-    
-    return winner
+        }
+        
+    return winner;
 }
 
-function game() {
-    let score = {
-        "computer": 0,
-        "player": 0
+function addScore(scoreboard, winner) {
+    if (scoreboard.player >= 5 || scoreboard.computer >= 5) {
+        return;
     }
 
-    for (let i = 0; i < 5; i++) {
-        let playerSelection = prompt("Choose your hand! (Rock, Paper, Scissors)").toLowerCase();
-        if (!(playerSelection == "rock" || playerSelection == "paper" || playerSelection == "scissors")) {
-            i--
-            console.log("Enter a valid hand! (Rock, Paper, Scissors)")
-            continue
-        }
-
-        let computerSelection = getComputerChoice()
-
-        let winner = playRound(playerSelection, computerSelection)
-
-        switch (winner) {
-            case "player":
-                score.player++
-                console.log(`You win! ${playerSelection} beats ${computerSelection}`)
-                break
-            case "computer":
-                score.computer++
-                console.log(`You lose! ${computerSelection} beats ${playerSelection}`)
-                break
-            case "draw":
-                console.log("Draw! There is no winner")
-        }
+    switch (winner) {
+        case "player":
+            scoreboard.player++;
+            break;
+        case "computer":
+            scoreboard.computer++;
+            break;
+        case "draw":
+            break;
     }
 
-    if (score.player > score.computer) {
-        console.log("PLAYER WINS THE GAME!!")
-    } else if (score.player < score.computer) {
-        console.log("COMPUTER WINS THE GAME!!")
-    } else {
-        console.log("There is no winner")
-    }
+    scoreDiv.textContent = `Player: ${scoreboard.player} - Computer: ${scoreboard.computer}`
 }
 
-game()
+function checkWinner(score) {
+    if (score.player >= 5) {
+        winnerDiv.textContent = "PLAYER WINS THE GAME!";
+    } else if (score.computer >= 5) {
+        winnerDiv.textContent = "COMPUTER WINS THE GAME!!";
+    }
+}
